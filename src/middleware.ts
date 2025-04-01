@@ -41,7 +41,7 @@ export async function middleware(request: NextRequest): Promise<unknown> {
 
         return response;
       }
-    } else if (url.includes("/login")) {
+    } else if (url.includes("/login") && !url.includes("/")) {
       return NextResponse.redirect(`${process.env.HF_ECOMMERCE_APP_BASE_URL}/`);
     }
   }
