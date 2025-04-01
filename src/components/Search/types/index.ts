@@ -4,6 +4,7 @@ interface SearchProps {
   CallBack: () => void;
   searchBy: string;
   setPagination: (event: number) => void;
+  clear: () => void;
 }
 
 

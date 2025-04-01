@@ -36,6 +36,8 @@ function Country() {
 
     const { status, data, total } = await getList({
       ...pagination,
+      pageNo: pagination.pageNo,
+      search: pagination.searchKeyword,
     });
 
     if (status) {
@@ -114,6 +116,10 @@ function Country() {
           setPagination={(event) =>
             setPagination({ ...pagination, pageNo: event })
           }
+          clear={() => {
+            setPagination({ ...pagination, pageNo: 1, searchKeyword: "" });
+            getCountryList()
+          }}
         />
       </div>
       <div className="w-full">

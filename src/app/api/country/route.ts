@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import dbConnect from "@/libs/db";
 import * as yup from "yup";
 import Country from "@/models/Country";
+import { PipelineStage } from "mongoose";
 
 export async function PUT(req: Request) {
   try {
@@ -25,7 +26,7 @@ export async function PUT(req: Request) {
       const res = await Country.create({
         name: body?.name,
         code: body?.code,
-        status: body?.status
+        status: body?.status,
       });
 
       if (res) {
@@ -67,11 +68,32 @@ export async function GET(req: NextRequest) {
 
     const limit: any = req.nextUrl.searchParams.get("limit");
     const pageNo: any = req.nextUrl.searchParams.get("pageNo");
-
+    const search: any = req.nextUrl.searchParams.get("search");
+    const pipeline: PipelineStage[] = [];
     const startingAfter: number = (parseInt(pageNo) - 1) * parseInt(limit);
 
-    const res = await Country.aggregate([
-      {
+    console.log(startingAfter);
+
+    if (search?.trim() !== "") {
+      pipeline.push({
+        $facet: {
+          result: [
+            {
+              $match: {
+                $or: [
+                  { name: { $regex: search, $options: "i" } },
+                  { code: { $regex: search, $options: "i" } },
+                ],
+              },
+            },
+            { $skip: startingAfter },
+            { $limit: parseInt(limit) },
+          ],
+          total: [{ $count: "total" }],
+        },
+      });
+    } else {
+      pipeline.push({
         $facet: {
           result: [
             { $sort: { _id: -1 } },
@@ -80,8 +102,10 @@ export async function GET(req: NextRequest) {
           ],
           total: [{ $count: "total" }],
         },
-      },
-    ]);
+      });
+    }
+
+    const res = await Country.aggregate(pipeline);
 
     if (res && Array.isArray(res) && res.length > 0) {
       const response = res[0]?.result;
