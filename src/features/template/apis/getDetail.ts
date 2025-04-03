@@ -2,7 +2,7 @@ import { toast } from "react-toastify";
 import Axios from "@/libs/Axios";
 import { AppDispatch } from "@/types";
 import { setLoading } from "@/reducers/universal";
-import type { DeleteType, CountryType } from "@/features/country/types";
+import type { DeleteType, TemplateType } from "@/features/template/types";
 
 const initialResponse = {
   name: "",
@@ -13,10 +13,10 @@ const getDetail =
   (payload: DeleteType) =>
   async (
     dispatch: AppDispatch
-  ): Promise<{ status: boolean; data: CountryType }> => {
+  ): Promise<{ status: boolean; data: TemplateType }> => {
     dispatch(setLoading(true));
     try {
-      const response = await Axios.post("/api/country", payload).then(
+      const response = await Axios.post("/api/template", payload).then(
         (res) => res.data
       );
 
@@ -27,7 +27,7 @@ const getDetail =
         return { status: false, data: initialResponse };
       }
     } catch (err: any) {
-      console.warn("error in getting country detail:: ", err);
+      console.warn("error in getting template detail:: ", err);
       toast.error(err?.response ? err?.response?.data?.message : err?.message, {
         position: "top-right",
       });

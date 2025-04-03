@@ -15,7 +15,6 @@ function Modal({
 }: ModalType) {
   if (!open) return null; // Hide modal when not open
 
-  console.log("maxWidth ::", maxWidth);
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div

@@ -1,12 +1,12 @@
 import Axios from "@/libs/Axios";
 import { toast } from "react-toastify";
-import type { CountryType } from "@/features/country/types";
+import type { TemplateType } from "@/features/template/types";
 
 const getList = async (
   payload: any
-): Promise<{ status: boolean; data: CountryType[]; total: number }> => {
+): Promise<{ status: boolean; data: TemplateType[]; total: number }> => {
   try {
-    const response = await Axios.get("/api/country", {
+    const response = await Axios.get("/api/template", {
       params: payload,
     }).then((res) => res.data);
 
@@ -23,7 +23,7 @@ const getList = async (
     toast.error(err?.response ? err?.response?.data?.message : err?.message, {
       position: "top-right",
     });
-    console.warn("error in getting country fetching :: ", err);
+    console.warn("error in getting template fetching :: ", err);
     return { status: false, data: [], total: 0 };
   }
 };

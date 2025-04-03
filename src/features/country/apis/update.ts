@@ -21,7 +21,7 @@ const update = (payload: CountryType) => async (dispatch: AppDispatch) => {
       toast.warning(response.message, { position: "top-right" });
     }
   } catch (err: any) {
-    console.log("error in updateing country :: ", err);
+    console.warn("error in updateing country :: ", err);
     toast.error(err?.response ? err?.response?.data?.message : err?.message, {
       position: "top-right",
     });

@@ -1,5 +1,6 @@
 import { MdDashboard } from "react-icons/md";
 import { MdFlagCircle } from "react-icons/md";
+import { ImInsertTemplate } from "react-icons/im";
 
 import type { IconBaseProps } from "react-icons";
 
@@ -17,6 +18,11 @@ const router: {
     label: "Country",
     link: "/country",
     icon: MdFlagCircle,
+  },
+  {
+    label: "Template",
+    link: "/template",
+    icon: ImInsertTemplate,
   },
 ];
 

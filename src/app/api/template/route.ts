@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import dbConnect from "@/libs/db";
 import * as yup from "yup";
-import Country from "@/models/Country";
+import Template from "@/models/Template";
 import { PipelineStage } from "mongoose";
 
 export async function PUT(req: Request) {
@@ -11,19 +11,19 @@ export async function PUT(req: Request) {
 
     const body = await req.json();
 
-    const size = await Country.find({ name: body?.name });
+    const size = await Template.find({ name: body?.name });
 
     if (size.length) {
       return NextResponse.json(
         {
           status: false,
-          message: "This country already exsist!",
+          message: "This template already exsist!",
           data: size,
         },
         { status: 303 }
       );
     } else {
-      const res = await Country.create({
+      const res = await Template.create({
         name: body?.name,
         code: body?.code,
         status: body?.status,
@@ -33,7 +33,7 @@ export async function PUT(req: Request) {
         return NextResponse.json(
           {
             status: true,
-            message: "country created successfully",
+            message: "template created successfully",
             data: res,
           },
           { status: 201 }
@@ -42,7 +42,7 @@ export async function PUT(req: Request) {
         return NextResponse.json(
           {
             status: false,
-            message: "something went wrong in creating country",
+            message: "something went wrong in creating template",
             data: res,
           },
           { status: 400 }
@@ -50,11 +50,11 @@ export async function PUT(req: Request) {
       }
     }
   } catch (err: any) {
-    console.error("Error in generating country :::", err?.message);
+    console.error("Error in generating template :::", err?.message);
     return NextResponse.json(
       {
         status: false,
-        message: "something went wrong in generating country",
+        message: "something went wrong in generating template",
         data: null,
       },
       { status: 500 }
@@ -103,7 +103,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const res = await Country.aggregate(pipeline);
+    const res = await Template.aggregate(pipeline);
 
     if (res && Array.isArray(res) && res.length > 0) {
       const response = res[0]?.result;
@@ -112,7 +112,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(
         {
           status: true,
-          message: "country fetched successfully",
+          message: "template fetched successfully",
           data: response,
           total: total,
         },
@@ -122,7 +122,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(
         {
           status: false,
-          message: "something went wrong fetching country",
+          message: "something went wrong fetching template",
           data: [],
           total: 0,
         },
@@ -130,11 +130,11 @@ export async function GET(req: NextRequest) {
       );
     }
   } catch (err: any) {
-    console.error("Error in getting country :::", err?.message);
+    console.error("Error in getting template :::", err?.message);
     return NextResponse.json(
       {
         status: false,
-        message: "something went wrong getting country",
+        message: "something went wrong getting template",
         data: [],
         total: 0,
       },
@@ -150,19 +150,19 @@ export async function POST(req: Request) {
     const entrie = await req.json();
 
     const schema = yup.object().shape({
-      _id: yup.string().trim().required("country id is missing!"),
+      _id: yup.string().trim().required("template id is missing!"),
     });
 
     return schema
       .validate({ ...entrie })
       .then(async (value) => {
-        const res = await Country?.findOne({ _id: `${value._id}` });
+        const res = await Template?.findOne({ _id: `${value._id}` });
 
         if (res?._id) {
           return NextResponse.json(
             {
               status: true,
-              message: "country detail's fetched successfully",
+              message: "template detail's fetched successfully",
               data: res,
             },
             { status: 200 }
@@ -171,7 +171,7 @@ export async function POST(req: Request) {
           return NextResponse.json(
             {
               status: false,
-              message: "something went wrong fetching country detail's",
+              message: "something went wrong fetching template detail's",
               data: res,
             },
             { status: 303 }
@@ -183,7 +183,7 @@ export async function POST(req: Request) {
           return NextResponse.json(
             {
               status: false,
-              message: "something went error occour country detail's",
+              message: "something went error occour template detail's",
               data: err.errors[0],
             },
             { status: 500 }
@@ -192,7 +192,7 @@ export async function POST(req: Request) {
           return NextResponse.json(
             {
               status: false,
-              message: "An error occurred while fetching the country details.",
+              message: "An error occurred while fetching the template details.",
               data: err.message,
             },
             { status: 500 }
@@ -200,11 +200,11 @@ export async function POST(req: Request) {
         }
       });
   } catch (err: any) {
-    console.error("Error in getting country details :::", err?.message);
+    console.error("Error in getting template details :::", err?.message);
     return NextResponse.json(
       {
         status: false,
-        message: "Something went wrong while retrieving the country details.",
+        message: "Something went wrong while retrieving the template details.",
         data: err.message,
       },
       { status: 500 }
@@ -218,19 +218,19 @@ export async function PATCH(req: Request) {
 
     const body = await req.json();
 
-    const size = await Country.find({ name: body?.name });
+    const size = await Template.find({ name: body?.name });
 
     if (size.length > 0) {
       return NextResponse.json(
         {
           status: false,
-          message: "This country name already exsist!",
+          message: "This template name already exsist!",
           data: null,
         },
         { status: 303 }
       );
     } else {
-      const res = await Country.updateOne(
+      const res = await Template.updateOne(
         { _id: `${body?._id}` },
         { $set: { name: body?.name, code: body?.code } }
       );
@@ -239,7 +239,7 @@ export async function PATCH(req: Request) {
         return NextResponse.json(
           {
             status: true,
-            message: "country updated successfully",
+            message: "template updated successfully",
             data: res,
           },
           { status: 202 }
@@ -248,7 +248,7 @@ export async function PATCH(req: Request) {
         return NextResponse.json(
           {
             status: false,
-            message: "country not updated",
+            message: "template not updated",
             data: res,
           },
           { status: 303 }
@@ -256,11 +256,11 @@ export async function PATCH(req: Request) {
       }
     }
   } catch (err: any) {
-    console.error("Error in updating country :::", err?.message);
+    console.error("Error in updating template :::", err?.message);
     return NextResponse.json(
       {
         status: false,
-        message: "something went wrong updating country",
+        message: "something went wrong updating template",
         data: err,
       },
       { status: 500 }
@@ -275,19 +275,19 @@ export async function DELETE(req: NextRequest) {
     const entrie = req.nextUrl.searchParams.get("_id");
 
     const schema = yup.object().shape({
-      _id: yup.string().trim().required("country id is missing!"),
+      _id: yup.string().trim().required("template id is missing!"),
     });
 
     return schema
       .validate({ _id: entrie })
       .then(async () => {
-        const res = await Country.deleteOne({ _id: `${entrie}` });
+        const res = await Template.deleteOne({ _id: `${entrie}` });
 
         if (res?.acknowledged) {
           return NextResponse.json(
             {
               status: true,
-              message: "country deleted successfully",
+              message: "template deleted successfully",
               data: res,
             },
             { status: 200 }
@@ -296,7 +296,7 @@ export async function DELETE(req: NextRequest) {
           return NextResponse.json(
             {
               status: false,
-              message: "something went wrong country",
+              message: "something went wrong template",
               data: res,
             },
             { status: 400 }
@@ -308,7 +308,7 @@ export async function DELETE(req: NextRequest) {
           return NextResponse.json(
             {
               status: false,
-              message: "something went error occour country",
+              message: "something went error occour template",
               data: err.errors[0],
             },
             { status: 400 }
@@ -325,11 +325,11 @@ export async function DELETE(req: NextRequest) {
         }
       });
   } catch (err: any) {
-    console.error("Error in deleted country :::", err?.message);
+    console.error("Error in deleted template :::", err?.message);
     return NextResponse.json(
       {
         status: false,
-        message: "something went wrong deleted country",
+        message: "something went wrong deleted template",
         data: err.message,
       },
       { status: 500 }
@@ -341,7 +341,7 @@ export async function OPTIONS() {
   try {
     await dbConnect();
 
-    const res = await Country.find({});
+    const res = await Template.find({});
 
     if (res && Array.isArray(res) && res.length > 0) {
       const response = res;
@@ -349,7 +349,7 @@ export async function OPTIONS() {
       return NextResponse.json(
         {
           status: true,
-          message: "country fetched successfully",
+          message: "template fetched successfully",
           data: response,
         },
         { status: 200 }
@@ -358,18 +358,18 @@ export async function OPTIONS() {
       return NextResponse.json(
         {
           status: false,
-          message: "No country found!",
+          message: "No template found!",
           data: [],
         },
         { status: 404 }
       );
     }
   } catch (err: any) {
-    console.error("Error in getting country :::", err?.message);
+    console.error("Error in getting template :::", err?.message);
     return NextResponse.json(
       {
         status: false,
-        message: "something went wrong getting country",
+        message: "something went wrong getting template",
         data: [],
       },
       { status: 500 }
